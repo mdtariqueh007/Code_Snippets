@@ -1,0 +1,33 @@
+// Online C compiler to run C program online
+#include <stdio.h>
+
+int main() {
+    
+    int a[6] = {129,82,26,241,106,139};
+    int r[4];
+    
+    r[0] = (a[0]>>0) | ((a[1]&0x0f)<<8);
+    r[1] = (a[1]>>4) | ((a[2]&0xff)<<4);
+    r[2] = (a[3]>>0) | ((a[4]&0x0f)<<8);
+    r[3] = (a[4]>>4) | ((a[5]&0xff)<<4);
+    
+    for(int i = 0;i<4;i++){
+        int sign = 0;
+        if((r[i]&(1<<11))){
+            sign = 1;
+        }
+        r[i] = r[i]&0x7ff;
+        if(sign){
+            printf("Changed\n");
+            r[i] = -r[i];
+        }
+    }
+    
+    for(int i = 0;i<4;i++){
+        printf("%d ",r[i]);
+    }
+    
+    printf("\n");
+    
+    return 0;
+}
