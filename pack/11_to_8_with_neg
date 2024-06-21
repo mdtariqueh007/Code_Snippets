@@ -1,0 +1,25 @@
+// Online C compiler to run C program online
+#include <stdio.h>
+
+int main() {
+    // Write C code here
+    int t[4] = {641,421,-753,-182};
+    int r[6];
+    
+    r[0] = (t[0] & 0xff);
+    r[1] = (t[0]>>8)|((t[1]&0x0f)<<4);
+    r[2] = (t[1]>>4) & 0xff;
+    r[3] = (t[2] & 0xff);
+    r[4] = (t[2]>>8) | ((t[3] & 0x0f)<<4);
+    r[5] = (t[3]>>4) & 0xff;
+    
+    for(int i = 0;i<6;i++){
+        printf("%d ",r[i]);
+    }
+    
+    printf("\n");
+    
+    
+
+    return 0;
+}
