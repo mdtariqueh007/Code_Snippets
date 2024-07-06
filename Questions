@@ -138,6 +138,167 @@ int main() {
 
 
 
+
+
+//////////////////////////////
+
+Prime Tree
+Number of Partition
+Maximizing Profit
+Palindrome Triplet
+
+/////////////////////
+
+
+////// Prime Tree //////////////
+
+
+prime tree
+prime tree
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAXN = 101; 
+
+vector<int> primes;
+vector<vector<int>> adj;
+vector<vector<long long>> dp;
+bool is_prime[MAXN];
+
+void sieve() {
+    fill(is_prime, is_prime + MAXN, true);
+    is_prime[0] = is_prime[1] = false;
+    for (int i = 2; i < MAXN; ++i) {
+        if (is_prime[i]) {
+            primes.push_back(i);
+            for (int j = 2 * i; j < MAXN; j += i) {
+                is_prime[j] = false;
+            }
+        }
+    }
+}
+
+void preprocess(int N) {
+    sieve();
+    adj.clear();
+    adj.resize(N);
+    dp.clear();
+    dp.assign(N, vector<long long>(primes.size(), 1));    
+}
+
+void dfs(int node, int par = -1) {
+    for (int ne : adj[node]) {
+        if (ne == par) continue;
+        dfs(ne, node);        
+        
+        for (int i = 0; i < (int)primes.size(); i++) {
+            long long t = 0;
+            for (int j = 0; j < (int)primes.size(); j++) {
+                if (is_prime[primes[i] + primes[j]]) continue;
+                t += dp[ne][j];
+                t %= MOD;
+            }
+            dp[node][i] *= t;
+            dp[node][i] %= MOD;
+        }
+    }
+}
+
+int solve(int N, vector<vector<int>> edges) {
+    preprocess(N);
+    
+    if (N == 1) return primes.size();
+    
+    for (vector<int> edge : edges) {
+        adj[edge[0]].push_back(edge[1]);
+        adj[edge[1]].push_back(edge[0]);     
+    }
+    
+    dfs(0);
+    long long ans = 0;
+    
+    for (int i = 0; i < (int)primes.size(); i++) {
+        ans += dp[0][i];
+        ans %= MOD;
+    }
+    
+    return ans;
+}
+
+int main() {
+    int N;
+    cin >> N;
+    vector<vector<int>> edges(N-1, vector<int>(2));
+    for (int i = 0; i < N-1; i++) {
+        cin >> edges[i][0] >> edges[i][1];
+        edges[i][0]--; 
+        edges[i][1]--;
+    }
+
+    cout << solve(N, edges) << endl;
+    return 0;
+}
+
+///////////////////////////
+
+//////////// NUmber of Partitions ////////////////////
+
+def solve(N, ar):
+    def gs(ar):
+        return sum(ar)
+
+    k = 0
+    n = N
+    ts = gs(ar)
+    ps = [0] * n
+    lc, rc = {}, {}
+
+    ps[0] = ar[0]
+    for i in range(1, n):
+        ps[i] = ps[i - 1] + ar[i]
+
+    for i in range(n - 1):
+        rc[ps[i]] = rc.get(ps[i], 0) + 1
+
+    mp = 0
+
+    for i in range(n - 1):
+        if 2 * ps[i] == ts:
+            mp += 1
+
+    for i in range(n):
+        cu = ar[i]
+        di = k - cu
+
+        if i > 0:
+            rc[ps[i - 1]] -= 1
+
+        for j in range(n - 1):
+            ls = ps[j]
+            rs = ts - ls
+
+            if 2 * ls + di == ts:
+                mp += 1
+
+        if i > 0:
+            rc[ps[i - 1]] += 1
+
+    return mp
+
+T = int(input())
+
+for _ in range(T):
+    N = int(input())
+    ar = list(map(int, input().split()))
+    out_ = solve(N, ar)
+    print(out_)
+//////////////////////////////////////
+
 /////////////////////Palindrome Triplet///////////////////
 
 def pc(S):
@@ -189,15 +350,5 @@ for _ in range(T):
     out_ = solve(n, S)
     print(out_)
 //////////////////////////////////////
-
-//////////////////////////////
-
-Prime Tree
-Number of Partition
-Maximizing Profit
-Palindrome Triplet
-
-/////////////////////
-
 
 
