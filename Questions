@@ -351,4 +351,49 @@ for _ in range(T):
     print(out_)
 //////////////////////////////////////
 
+///// Prime Tree /////////////
+
+
+def s(n, pr):
+    prime = [True] * (n + 1)
+    for p in range(2, int(n ** 0.5) + 1):
+        if prime[p]:
+            for i in range(p * p, n + 1, p):
+                prime[i] = False
+    for i in range(2, n + 1):
+        if prime[i]:
+            pr.append(i)
+
+def t(n, pr):
+    return n in pr
+
+def coder(s, p, mod, a, dp, pr):
+    for i in range(25):
+        dp[s][i] = 1
+    for u in a[s]:
+        if u != p:
+            coder(u, s, mod, a, dp, pr)
+            for i in range(25):
+                pos = 0
+                for j in range(25):
+                    if not t(pr[i] + pr[j], pr):
+                        pos = (pos + dp[u][j]) % mod
+                dp[s][i] = (dp[s][i] * pos) % mod
+
+def f(n, edges):
+    mod = 1000000007
+    pr = []
+    s(200, pr)
+    dp = [[0] * 25 for _ in range(n + 1)]
+    a = [[] for _ in range(n + 1)]
+    for i in range(n - 1):
+        a[edges[i][0]].append(edges[i][1])
+        a[edges[i][1]].append(edges[i][0])
+    coder(1, -1, mod, a, dp, pr)
+    ans = 0
+    for i in range(25):
+        ans = (ans + dp[1][i]) % mod
+    return ans
+///////////////////////////////////////
+
 
