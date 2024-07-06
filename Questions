@@ -397,3 +397,66 @@ def f(n, edges):
 ///////////////////////////////////////
 
 
+////////////////// Maximising Profit /////////////////////
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+// Function to calculate the maximum sum of money
+int maximizeProfit(vector<int> &C, vector<int> &D, int n) {
+    int itemCount = C.size();
+    vector<pair<int, int>> items(itemCount);
+    
+    // Combine costs and delivery prices into a vector of pairs
+    for (int i = 0; i < itemCount; ++i) {
+        items[i] = {C[i], D[i]};
+    }
+    
+    // Sort items based on their total value (cost + delivery price)
+    sort(items.begin(), items.end(), [](const pair<int, int> &a, const pair<int, int> &b) {
+        return (a.first + a.second) > (b.first + b.second);
+    });
+    
+    // Select the top n items
+    vector<int> selectedDeliveryPrices;
+    int totalCost = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        totalCost += items[i].first;
+        selectedDeliveryPrices.push_back(items[i].second);
+    }
+    
+    // Find the minimum delivery price among the selected items
+    int minDeliveryPrice = *min_element(selectedDeliveryPrices.begin(), selectedDeliveryPrices.end());
+    
+    // Add the delivery prices to the total cost
+    totalCost += n * minDeliveryPrice;
+    
+    return totalCost;
+}
+
+int main() {
+    // Example input
+    vector<int> C = {10, 20, 30, 40};
+    vector<int> D = {5, 4, 3, 2};
+    int n = 2;
+    
+    // Calculate the maximum profit
+    int result = maximizeProfit(C, D, n);
+    
+    // Output the result
+    cout << "Maximum profit: " << result << endl;
+    
+    return 0;
+}
+
+
+
+////////////////////////////////
+
+
