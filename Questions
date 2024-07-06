@@ -1,0 +1,194 @@
+Cost of String
+
+int solve(const string& S) {
+    vector<int> freq(26, 0);
+
+    for (char c : S) {
+        freq[c - 'a']++;
+    }
+
+    int total = 0;
+
+    for (int i = 0; i < 26; ++i) {
+        for (int j = i + 1; j < 26; ++j) {
+            total += freq[i] * freq[j] * abs(i - j);
+        }
+    }
+
+    return total;
+}
+
+Good Sets
+
+int solve(const string& s) {
+    vector<int> lc;
+    for (int i = 0; i < s.size(); ++i) {
+        if (islower(s[i])) {
+            lc.push_back(i);
+        }
+    }
+
+    int m = 0;
+    int c = 0;
+    int p = -1;
+    for (int i : lc) {
+        if (p == -1 || s.substr(p + 1, i - p).compare(s.substr(p + 1, i - p)) != 0) {
+            c += 1;
+        } else {
+            c = 1;
+        }
+        m = max(m, c);
+        p = i;
+    }
+
+    return m;
+}
+
+
+Good Pair
+
+#include <iostream>
+#include <vector>
+using namespace std;
+vector<bool> sieve(int max_val) {
+    vector<bool> is_prime(max_val + 1, true);
+    is_prime[0] = is_prime[1] = false;
+    for (int i = 2; i * i <= max_val; ++i) {
+        if (is_prime[i]) {
+            for (int j = i * i; j <= max_val; j += i) {
+                is_prime[j] = false;
+            }
+        }
+    }
+    return is_prime;
+}
+
+int main() {
+    int N;
+    cin >> N;
+
+    vector<int> A(N);
+    int max_val = 0;
+    for (int i = 0; i < N; ++i) {
+        cin >> A[i];
+        if (A[i] > max_val) {
+            max_val = A[i];
+        }
+    }
+
+    vector<bool> is_prime = sieve(max_val);
+
+    int prime_count = 0, composite_count = 0;
+    for (int i = 0; i < N; ++i) {
+        if (is_prime[A[i]]) {
+            prime_count++;
+        } else {
+            composite_count++;
+        }
+    }
+
+    int good_pairs = prime_count * composite_count;
+    cout << good_pairs << endl;
+
+    return 0;
+}
+
+
+Minimal Strings
+
+
+
+#include <iostream>
+#include <unordered_set>
+#include <string>
+using namespace std;
+void generateSubstrings(const string &s, int len, unordered_set<string> &substrings) {
+    for (int i = 0; i <= s.size() - len; ++i) {
+        substrings.insert(s.substr(i, len));
+    }
+}
+
+string findMinimalString(const string &s) {
+    unordered_set<string> substrings;
+    for (int len = 1; ; ++len) {
+        substrings.clear();
+        generateSubstrings(s, len, substrings);
+        string candidate(len, 'a');
+        while (true) {
+            if (substrings.find(candidate) == substrings.end()) {
+                return candidate;
+            }
+            int pos = len - 1;
+            while (pos >= 0 && candidate[pos] == 'z') {
+                candidate[pos] = 'a';
+                --pos;
+            }
+            if (pos < 0) break;
+            ++candidate[pos];
+        }
+    }
+}
+
+int main() {
+    string S;
+    cin >> S;
+    cout << findMinimalString(S) << endl;
+    return 0;
+}
+
+
+
+/////////////////////Palindrome Triplet///////////////////
+
+def pc(S):
+    n = len(S)
+    ip = [[False] * n for _ in range(n)]
+    for i in range(n):
+        ip[i][i] = True
+    for ln in range(2, n + 1):
+        for i in range(n - ln + 1):
+            j = i + ln - 1
+            if S[i] == S[j]:
+                if ln == 2:
+                    ip[i][j] = True
+                else:
+                    ip[i][j] = ip[i + 1][j - 1]
+    return ip
+
+def solve(n, S):
+    ip = pc(S)
+    
+    dl = [0] * n
+    for i in range(n):
+        for j in range(i + 1):
+            if ip[j][i]:
+                dl[i] += 1
+        if i > 0:
+            dl[i] += dl[i - 1]
+    
+    dr = [0] * n
+    for i in range(n - 1, -1, -1):
+        for j in range(i, n):
+            if ip[i][j]:
+                dr[i] += 1
+        if i < n - 1:
+            dr[i] += dr[i + 1]
+    
+    gt = 0
+    for i in range(1, n - 1):
+        for j in range(i, n - 1):
+            if ip[i][j]:
+                gt += dl[i - 1] * dr[j + 1]
+    
+    return gt
+
+T = int(input())
+for _ in range(T):
+    n = int(input())
+    S = input()
+    out_ = solve(n, S)
+    print(out_)
+//////////////////////////////////////
+
+
+
