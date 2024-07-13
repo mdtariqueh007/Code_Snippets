@@ -569,3 +569,120 @@ int solve(string A, string B) {
 ////////////////////////////////////////////////
 
 
+///////////// Range Function /////////////
+
+#include<bits/stdc++.h>
+using namespace std;
+#define int long long
+
+struct Node {
+    int tot = 0, sum = 0, pref = 0, suf = 0, len = 0;
+
+    void init(int val) {
+        tot = sum = pref = suf = val;
+        len = 1;
+    }
+} test;
+
+Node merge(Node a, Node b) {
+    Node res;
+    res.tot = a.tot + b.tot + a.suf * b.len + b.pref * a.len;
+    res.sum = a.sum + b.sum;
+    res.pref = a.pref + a.sum * b.len + b.pref;
+    res.suf = b.suf + b.sum * a.len + a.suf;
+    res.len = a.len + b.len;
+    return res;
+}
+
+class SGTree {
+    vector<Node>seg;
+public:
+    SGTree(int n)
+    {
+        seg.resize(4 * n);
+    }
+
+    void build (int ind, int low, int high, vector<int>&arr)
+    {
+        if (low == high)
+        {
+            seg[ind].init(arr[low]);
+            return;
+        }
+
+        int mid = (low + high) >> 1;
+        build(2 * ind + 1, low, mid, arr);
+        build(2 * ind + 2, mid + 1, high, arr);
+        seg[ind] = merge(seg[2 * ind + 1] , seg[2 * ind + 2]);
+    }
+
+    Node query(int ind, int low, int high, int l, int r)
+    {
+        if (r < low || high < l)return test;
+
+        if (l <= low && high <= r)return seg[ind];
+
+        int mid = (low + high) >> 1;
+        Node left = query(2 * ind + 1, low, mid, l, r);
+        Node right = query(2 * ind + 2, mid + 1, high, l, r);
+        return merge(left , right);
+    }
+
+    void update(int ind, int low, int high, int i, int val)
+    {
+        if (low == high)
+        {
+            seg[ind].init(val);
+            return;
+        }
+
+        int mid = (low + high) >> 1;
+        if (i <= mid)update(2 * ind + 1, low, mid, i, val);
+        else update(2 * ind + 2, mid + 1, high, i, val);
+        seg[ind] = merge(seg[2 * ind + 1] , seg[2 * ind + 2]);
+    }
+
+};
+
+signed main() {
+    int t; cin >> t;
+    while (t--) {
+        int n, q; cin >> n >> q;
+        vector<int>v(n);
+        for (int i = 0; i < n; ++i)
+        {
+            cin >> v[i];
+        }
+        SGTree sgt(n);
+        sgt.build(0, 0, n - 1, v);
+        vector<int>res;
+        while (q--) {
+            int type; cin >> type;
+            if (type == 1) {
+                int ind, val; cin >> ind >> val;
+                ind--;
+                sgt.update(0, 0, n - 1, ind, val);
+            }
+            else {
+                int l, r; cin >> l >> r;
+                l--;
+                r--;
+                int temp = 0;
+
+                temp += sgt.query(0, 0, n - 1, l, r).tot;
+
+                res.push_back(temp);
+            }
+        }
+        for (int i = 0; i < res.size(); ++i)
+        {
+            cout << res[i] << " ";
+        }
+        cout << endl;
+    }
+}
+
+
+//////////////////////////////////////////
+
+
