@@ -543,3 +543,29 @@ int main() {
 ///////////////////////////////////////
 
 
+/////////////////// First Subsequence ///////////////////////
+
+int solve(string A, string B) {
+    int n = A.size(), m = B.size();
+    for (int start = 0; start < n; ++start) {
+        bool usedChange = false;
+        int i = start, j = 0;
+        while (i < n && j < m) {
+            if (A[i] == B[j]) {
+                i++; j++;
+            } else if (!usedChange && j > 0) { 
+                usedChange = true;
+                j++; 
+            } else {
+                break;
+            }
+        }
+        if (j == m) return start;
+    }
+    return -1; 
+}
+
+
+////////////////////////////////////////////////
+
+
