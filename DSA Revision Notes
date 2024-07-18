@@ -1,0 +1,33 @@
+Bridges in Graph
+===============
+
+Using Tarjan's Algorithm
+
+mark the nodes time_of_insertion and lowest_time_of_insertion
+
+if for any node and its adjacent_node (it) except parent
+
+low[it]>tin[node] then {it,node} is a bridge
+------------------------------------------------------
+
+We can also use Tarjan's Algo to find the SCC in graph
+
+===================================
+//Complete later
+===================================
+
+Articulation point
+=============================
+
+Do DFS with low[] and tin[]
+
+but take low from univisited adjacent nodes
+
+and check if low[it]>=tin[node] && parent!=-1
+
+for parent node it is an articulation point if there are multiple childrens.
+
+==================================
+
+SCC using Kosarajus
+
